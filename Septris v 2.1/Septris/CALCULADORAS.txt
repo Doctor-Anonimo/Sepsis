@@ -1,0 +1,66 @@
+CALCULADORAS NEWS Y SOFA · SEPTRIS
+
+USO
+Las puntuaciones aparecen en la barra de signos vitales y se recalculan al
+cambiar de paciente, variar sus signos, completar un estudio o cambiar los
+tratamientos activos. Pulse una puntuación o el botón de ayuda correspondiente
+para ver el dato utilizado y los puntos de cada componente. Leer pausa la partida.
+
+NEWS
+Se utilizan los siete componentes de NEWS2 con la escala 1 de saturación.
+Los casos iniciales asumen aire ambiente. No se aplica la escala 2 de saturación.
+Cuando no se proporciona una observación de conciencia, el juego la aproxima
+mediante Glasgow: 15 equivale a alerta; menos de 15, a estado alterado.
+Esto es una adaptación del juego, no una equivalencia clínica validada entre
+Glasgow y la evaluación ACVPU. La aproximación se identifica en el desglose.
+La falta de un dato produce un resultado parcial, sin asumir que sea normal.
+
+SOFA
+Se calculan los seis componentes: respiratorio, coagulación, hígado,
+cardiovascular, neurológico y renal. Cada uno aporta entre 0 y 4 puntos.
+El componente renal usa el peor criterio entre creatinina y diuresis, sin sumarlos.
+La calculadora emplea signos actuales y la última muestra de laboratorio ya
+disponible. Un estudio pendiente no reemplaza al resultado previo. Repetir el
+estudio actualiza el componente cuando termina su contador.
+Los casos incluyen las unidades de PaO2 y plaquetas utilizadas por el original;
+creatinina y bilirrubina están expresadas en mg/dL. Se conservan dos decimales
+de creatinina para evitar convertir una cifra como 1,4 en 1 por redondeo entero.
+Los cálculos emplean los valores reportados en el panel, antes del formato de coma.
+PaO2 se relaciona con la FiO2 y el soporte respiratorio registrados al solicitar
+la muestra. Los casos iniciales usan FiO2 0,21, sin soporte respiratorio.
+La diuresis diaria se proyecta como mL/kg/h × peso × 24, igual que en el juego
+original, salvo que el caso defina directamente urine24h.
+Se trata del SOFA del momento de la partida: no se simula la ventana clínica
+de los peores valores de 24 horas ni la duración mínima clínica de vasopresores.
+Los medicamentos activos se consideran inmediatamente en la simulación.
+Si un vasopresor activo no tiene dosis, el componente muestra un intervalo
+compatible con ese medicamento. No se asigna una dosis arbitraria.
+Si faltan estudios, «parcial» es el subtotal mínimo conocido. El desglose enumera
+lo que falta. Un intervalo, por ejemplo 6–7, expresa incertidumbre de dosis.
+
+CONFIGURAR NUEVOS CASOS
+En cada caso, scoreContext admite:
+  supplementalOxygen: true o false
+  fio2: fracción entre 0.21 y 1
+  respiratorySupport: true o false
+  consciousness: "A", "C", "V", "P" o "U", si está definido
+  urine24h: volumen documentado en mL/24 h, si está definido
+El motor copia ese contexto al estado independiente de cada paciente.
+Los tratamientos pueden definir sofaDose, en μg/kg/min, para noradrenalina,
+adrenalina, dopamina o dobutamina. Omitirlo mantiene el intervalo cuando procede.
+Los estudios identifican sus resultados mediante analyte: pao2, platelets,
+bilirubin o creatinine. Conserve sus unidades; una unidad desconocida se marca
+como dato pendiente en vez de interpretarse automáticamente.
+Estas propiedades son opcionales para nuevos casos: su ausencia puede dejar
+componentes parciales. No es necesario editar el motor para añadirlas.
+
+REFERENCIAS Y CRITERIOS
+NEWS: tabla oficial del Royal College of Physicians, NEWS2, escala 1 (2017).
+https://www.rcp.ac.uk/media/alxev00t/news2-chart-1_the-news-scoring-system_0_0.pdf
+SOFA: tabla 1 de Singer y colaboradores, consenso Sepsis-3, JAMA (2016).
+https://jamanetwork.com/journals/jama/fullarticle/2492881
+Límites numéricos continuos contrastados con la implementación de MIT-LCP:
+bilirrubina ≥12, creatinina ≥5 y dopamina >5 para el siguiente nivel.
+https://github.com/MIT-LCP/mimic-code/blob/main/mimic-iv/concepts/score/sofa.sql
+La integración fue probada con límites de puntuación y casos simulados;
+no constituye validación clínica para uso asistencial.
